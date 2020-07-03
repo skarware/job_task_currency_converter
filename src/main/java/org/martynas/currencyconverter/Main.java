@@ -1,4 +1,4 @@
-package org.martynas.currency_converter;
+package org.martynas.currencyconverter;
 
 import java.util.Arrays;
 
