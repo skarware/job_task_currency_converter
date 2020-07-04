@@ -75,7 +75,7 @@ public class CurrencyExchangeService {
 
             // Usually there is a commission fee on currency exchange, fortunately/sorrowful for this task's imaginary user/banker it is 0
             BigDecimal exchangeFee = calcExchangeFee(convertedAmount, commissionRate);
-            BigDecimal total = convertedAmount.subtract(exchangeFee);
+            BigDecimal total = convertedAmount.subtract(exchangeFee, MATH_CONTEXT);
 
             // Round up to SCALE (18) decimal places using ROUNDING_MODE (HALF_UP)
             return total.setScale(SCALE, ROUNDING_MODE);
@@ -90,7 +90,7 @@ public class CurrencyExchangeService {
 
     // Method can be static as no need for 'this' keyword inside
     public static BigDecimal calcConvertedAmount(BigDecimal amount, BigDecimal conversionRatio) {
-        return amount.multiply(conversionRatio);
+        return amount.multiply(conversionRatio, MATH_CONTEXT);
     }
 
     // Method can be static as no need for 'this' keyword inside
@@ -111,6 +111,6 @@ public class CurrencyExchangeService {
           it is safer then using double constructor as some numbers, like 0.001D, does not have an exact representation in double
           so the result, in those cases, will differ from expected.
          */
-        return amount.multiply(BigDecimal.valueOf(commissionRate));
+        return amount.multiply(BigDecimal.valueOf(commissionRate), MATH_CONTEXT);
     }
 }
