@@ -4,6 +4,7 @@ import com.opencsv.CSVReader;
 import org.martynas.currencyconverter.model.Currency;
 import org.martynas.currencyconverter.model.CurrencyRates;
 import org.martynas.currencyconverter.util.FileUtil;
+import org.martynas.currencyconverter.util.NumberUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -15,7 +16,7 @@ public class FileService {
     private static final File FILE = new File(FILE_NAME);
 
     public boolean loadCurrencyRatesData(CurrencyRates currencyRates) {
-        System.out.print("Loading loans data from a FILE... ");
+        System.out.print("Loading exchange rates from a FILE...");
         if (readCSVFile(currencyRates)) {
             // If data loading from a file without errors inform the user and return true
             if (currencyRates.getSize() > 0) {
@@ -31,7 +32,9 @@ public class FileService {
         }
     }
 
-    // The method below reads CSV string lines from a file, converts to Currency objects and adds to currencyRates
+    /**
+     * Read CSV string lines from a file, convert to Currency objects and add to currencyRates
+     */
     private boolean readCSVFile(CurrencyRates currencyRates) {
         // Read file into BufferedReader
         try (BufferedReader bufferedReader = FileUtil.readFile(FILE)) {
@@ -69,14 +72,15 @@ public class FileService {
         }
     }
 
-    // Method to create currencyRate object from CSV line
+    /**
+     * Create currencyRate object from CSV line
+     */
     private Currency csvLineToCurrencyBeanMaker(String[] csvLine) {
         if (csvLine == null) return null;
         String name = csvLine[0];
         double rate = 0;
         try {
-            // Remove grouping comas if any and if comma used as decimal separator replace comma with dot
-            rate = Double.parseDouble(csvLine[1].replaceAll(",(?=[0-9]+,)", "").replaceAll(",", "."));
+            rate = Double.parseDouble(NumberUtils.toDotDecimalSeparator(csvLine[1]));
         } catch (NumberFormatException e) {
             System.err.println("ERROR: Caught NumberFormatException while trying to parse bufferedCSVStrings string type into double type.");
             return null;
