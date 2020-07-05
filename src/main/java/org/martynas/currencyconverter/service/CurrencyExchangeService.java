@@ -16,7 +16,7 @@ public class CurrencyExchangeService {
     private static final RoundingMode ROUNDING_MODE = RoundingMode.HALF_UP;
     private static final int SCALE = 18;
 
-    // Rounding mode and scale for final calculation results
+    // MathContext for intermediate calculations
     private static final MathContext MATH_CONTEXT = MathContext.DECIMAL128;
 
     private final CurrencyRates currencyRates = new CurrencyRates();
