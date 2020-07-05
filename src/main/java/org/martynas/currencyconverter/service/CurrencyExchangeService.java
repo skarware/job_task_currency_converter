@@ -13,7 +13,7 @@ import java.util.NoSuchElementException;
 public class CurrencyExchangeService {
 
     // Rounding mode and scale for final calculation results
-    private static final RoundingMode ROUNDING_MODE = RoundingMode.HALF_UP;
+    private static final RoundingMode ROUNDING_MODE = RoundingMode.HALF_EVEN;
     private static final int SCALE = 18;
 
     // MathContext for intermediate calculations
@@ -47,7 +47,11 @@ public class CurrencyExchangeService {
         BigDecimal convertedAmount = convertCurrency(bdAmount, fromCurrency, toCurrency, currencyRates, 0);
 
         // Format the result up to 18 decimal places hiding more than 2 zeros
-        DecimalFormat df = new DecimalFormat("0.00################");
+//        DecimalFormat df = new DecimalFormat("0.00################");
+        DecimalFormat df = new DecimalFormat();
+        df.setMaximumFractionDigits(SCALE);
+        df.setMinimumFractionDigits(2);
+        df.setRoundingMode(ROUNDING_MODE);
 
         // Print the result to STDOUT
         System.out.println(df.format(bdAmount) + " " + fromCurrency + " => " + df.format(convertedAmount) + " " + toCurrency);
@@ -107,9 +111,9 @@ public class CurrencyExchangeService {
 
     public static BigDecimal calcExchangeFee(BigDecimal amount, double commissionRate) {
         /*
-          Note that BigDecimal's valueOf method converts double to its String representation before converting to BigDecimal, therefor
-          it is safer then using double constructor as some numbers, like 0.001D, does not have an exact representation in double
-          so the result, in those cases, will differ from expected.
+          Note that BigDecimal's valueOf method converts double to its String representation before converting to BigDecimal,
+          therefor it is safer then using double constructor as some numbers, like 0.1D, does not have an exact representation
+          in double type so the result in those cases will differ from expected.
          */
         return amount.multiply(BigDecimal.valueOf(commissionRate), MATH_CONTEXT);
     }
